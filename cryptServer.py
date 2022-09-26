@@ -30,43 +30,44 @@ data = cursor.execute("select * from user").fetchall()
 for i in data:
     print(i)
     try:
-        k = ct.getlatestTransaction(i[2],0, ctrack)
+        k = ct.getlatestTransaction(i[2],0, ct.ctrack,ct.acc)
         print(k)
         cursor.execute("update user set last_hash='{0}',last_block_mined='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
         #data.iloc[i][-1] = k[0]['blockNumber']
-        print("Working For",i[1])
-        for j in k:
-            msg=''
-            print(j['hash'],i[4])
-            #time.sleep(30)
-            
-            if j['hash'] != i[4]:
-                print("True")
+        if i[3] != None:
+            print("Working For",i[1])
+            for j in k:
+                msg=''
+                print(j['hash'],i[4])
+                #time.sleep(30)
                 
-                msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
-                if j['from'] == str(i[2]):
-                    msg+=" <b>(Your Wallet):</b>\n"+j['from'].upper()+"\n"
-                else:
-                    msg+=":\n"+j['from'].upper()+"\n"
-                if j['to'] == str(i[2]):
-                    msg+="To<b>(Your Wallet)</b>:\n"+j['to'].upper()+"\n"
-                else:
-                    msg+="To:\n"+j['to'].upper()+"\n"
+                if j['hash'] != i[4]:
+                    print("True")
                     
-                if int(j['value'])!=0:
-                    msg+="Ether transfer: {:.18f}".format(float(j['value'])/10**18)
-                
-                tele=requests.get(telegram_url+"/sendMessage",params={"chat_id":i[0],
-                                                                "text":msg,
-                                                                "parse_mode":"HTML"
-                                                                })
-                
-                print(tele.json())
+                    msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
+                    if j['from'] == str(i[2]):
+                        msg+=" <b>(Your Wallet):</b>\n"+j['from'].upper()+"\n"
+                    else:
+                        msg+=":\n"+j['from'].upper()+"\n"
+                    if j['to'] == str(i[2]):
+                        msg+="To<b>(Your Wallet)</b>:\n"+j['to'].upper()+"\n"
+                    else:
+                        msg+="To:\n"+j['to'].upper()+"\n"
+                        
+                    if int(j['value'])!=0:
+                        msg+="Ether transfer: {:.18f}".format(float(j['value'])/10**18)
                     
-                print("message sent")                
-            else:
-                break
+                    tele=requests.get(telegram_url+"/sendMessage",params={"chat_id":i[0],
+                                                                    "text":msg,
+                                                                    "parse_mode":"HTML"
+                                                                    })
+                    
+                    print(tele.json())
+                        
+                    print("message sent")                
+                else:
+                    break
     except:
         print("Invalid address",i)
     
@@ -74,9 +75,6 @@ cursor.close()
 sqliteConnection.close()
 [print(x[4]) for x in data]
         
-        
-    
-    
     
     
     

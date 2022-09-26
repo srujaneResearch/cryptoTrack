@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Tue Sep 27 00:12:08 2022
+
+@author: soul
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 27 00:10:13 2022
+
+@author: soul
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Sun Sep 25 12:29:45 2022
 
 @author: soul
@@ -30,21 +46,21 @@ data = cursor.execute("select * from user").fetchall()
 for i in data:
     print(i)
     try:
-        k = ct.getlatestTransaction(i[2],0,ct.bsctrack,ct.bscacc)
+        k = ct.getlatestTransaction(i[2],0,ct.ftmtrack,ct.ftmacc)
         print(k)
-        cursor.execute("update user set bsc_l_tx='{0}',bsc_l_block='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
+        cursor.execute("update user set ftm_l_tx='{0}',ftm_l_block='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
         #data.iloc[i][-1] = k[0]['blockNumber']
         
-        if i[6] != None:
+        if i[-2] != None:
             print("Working For",i[1])
             
             for j in k:
                 msg=''
-                print(j['hash'],i[7])
+                print(j['hash'],i[-1])
                 #time.sleep(30)
                 
-                if j['hash'] != i[7]:
+                if j['hash'] != i[-1]:
                     print("True")
                     
                     msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
@@ -58,7 +74,7 @@ for i in data:
                         msg+="To:\n"+j['to'].upper()+"\n"
                         
                     if int(j['value'])!=0:
-                        msg+="BNB transfer: {:.18f}".format(float(j['value'])/10**18)
+                        msg+="FTM transfer: {:.18f}".format(float(j['value'])/10**18)
                     
                     tele=requests.get(telegram_url+"/sendMessage",params={"chat_id":i[0],
                                                                     "text":msg,
