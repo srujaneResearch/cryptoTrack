@@ -27,8 +27,14 @@ blockchain = ['eth','bsc','avalanche','polygon','fantom']
 
 startmsg = """
 Welcome {0}
-I’ll will track all transactions from your Ethereum wallet and notify you immediately!
-Bot will NEVER ask you for your PRIVATE KEYS. Always type ONLY PUBLIC KEYS (ETH or BTC wallet address).
+I’ll will track all transactions from your
+     Ethereum wallet
+     Binance Wallet
+     Avalanche Wallet
+     Polygon Wallet
+     Fantom Wallet
+and notify you immediately!
+Bot will NEVER ask you for your PRIVATE KEYS. Always type ONLY PUBLIC KEYS.
 
 By tracking your transactions, be the first to know when: 
     1) you get any tokens from ICO 
