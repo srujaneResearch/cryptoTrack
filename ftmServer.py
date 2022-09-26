@@ -21,23 +21,11 @@ Created on Sun Sep 25 12:29:45 2022
 
 @author: soul
 """
-import time
-import aiohttp
 import cryptotrack as ct
-import pandas as pd
-import asyncio
 import requests
 cryp = "5730421955:AAF_pJBJcfrWiDV4M0Pfa_w1k5WfunLecnU" # This is the API KEY for bot
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
-
-
-req=[]
-
-
-
-
-req = []
 import sqlite3 as sq
 
 sqliteConnection = sq.connect('cryptoTrack.db')
