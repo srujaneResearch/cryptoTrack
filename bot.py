@@ -19,8 +19,8 @@ import math
 etherscan = "https://etherscan.io/address/"
 bscscan='https://bscscan.com/address/'
 avascan='https://snowtrace.io/address/'
-polyscan='https://polygonscan.com/address'
-ftmscan='https://ftmscan.com/address'
+polyscan='https://polygonscan.com/address/'
+ftmscan='https://ftmscan.com/address/'
 blockchain = ['eth','bsc','avalanche','polygon','fantom']
 
 
