@@ -19,8 +19,11 @@ cryp = "5730421955:AAF_pJBJcfrWiDV4M0Pfa_w1k5WfunLecnU" # This is the API KEY fo
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 import sqlite3 as sq
+import os
+dfile = os.path.join(os.path.expanduser('~'),'Desktop','cryptoTrack','cryptoTrack.db')
 
-sqliteConnection = sq.connect('cryptoTrack.db')
+
+sqliteConnection = sq.connect(dfile)
 cursor = sqliteConnection.cursor()
 data = cursor.execute("select * from user").fetchall()
 for i in data:

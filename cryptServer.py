@@ -21,7 +21,7 @@ sqliteConnection = sq.connect(dfile)
 cursor = sqliteConnection.cursor()
 data = cursor.execute("select * from user").fetchall()
 for i in data:
-    print(i)
+    #print(i)
     try:
         k = ct.getlatestTransaction(i[2],0, ct.ctrack,ct.acc)
         print(k)
@@ -62,7 +62,7 @@ for i in data:
                 else:
                     break
     except:
-        print("Invalid address",i)
+        print("Invalid address",i[2])
     
 cursor.close()
 sqliteConnection.close()
