@@ -34,6 +34,7 @@ def getSymbol(contract,abi,endpoint):
     from web3 import Web3
     url=endpoint
     web3 = Web3(Web3.HTTPProvider(url))
+    contract = web3.toChecksumAddress(contract)
     c = web3.eth.contract(contract,abi=abi)
     return c.functions.symbol().call()
 
