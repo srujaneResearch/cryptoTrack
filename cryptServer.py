@@ -25,7 +25,7 @@ for i in data:
     #print(i)
     try:
         k = ct.getlatestTransaction(i[2],0, ct.ctrack,ct.acc)
-        print(k)
+        #print(k)
         cursor.execute("update user set last_hash='{0}',last_block_mined='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
         #data.iloc[i][-1] = k[0]['blockNumber']
@@ -33,11 +33,11 @@ for i in data:
             print("Working For",i[1])
             for j in k:
                 msg=''
-                print(j['hash'],i[4])
+                
                 #time.sleep(30)
                 
                 if j['hash'] != i[4]:
-                    print("True")
+                    
                     msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
                     if j['from'] == str(i[2]):
                         msg+=" <b>(Your Wallet):</b>\n"+ "<a href='{0}'>{1}</a>".format(ct.etherscan+j['from'],j['from'].upper())+"\n"
@@ -64,9 +64,6 @@ for i in data:
                                                                     "parse_mode":"HTML"
                                                                     })
                     
-                    print(tele.json())
-                        
-                    print("message sent")                
                 else:
                     break
     except:

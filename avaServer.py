@@ -27,24 +27,24 @@ sqliteConnection = sq.connect(dfile)
 cursor = sqliteConnection.cursor()
 data = cursor.execute("select * from user").fetchall()
 for i in data:
-    print(i)
+    #print(i)
     try:
         k = ct.getlatestTransaction(i[2],0,ct.avatrack,ct.avaacc)
-        print(k)
+        #print(k)
         cursor.execute("update user set ava_l_tx='{0}',ava_l_block='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
         #data.iloc[i][-1] = k[0]['blockNumber']
         
         if i[8] != None:
-            print("Working For",i[1])
+            #print("Working For",i[1])
             
             for j in k:
                 msg=''
-                print(j['hash'],i[9])
+                #print(j['hash'],i[9])
                 #time.sleep(30)
                 
                 if j['hash'] != i[9]:
-                    print("True")
+                    #print("True")
                     
                     msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
                     if j['from'] == str(i[2]):
@@ -73,9 +73,9 @@ for i in data:
                                                                     "parse_mode":"HTML"
                                                                     })
                     
-                    print(tele.json())
+                    #print(tele.json())
                         
-                    print("message sent")                
+                    #print("message sent")                
                 else:
                     break
     except:
