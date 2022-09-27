@@ -25,7 +25,12 @@ data = cursor.execute("select * from user").fetchall()
 for i in data:
     #print(i)
     try:
-        k = ct.getlatestTransaction(i[2],0,ct.bsctrack,ct.bscacc)
+        
+        if i[6] != None:
+            
+            k = ct.getlatestTransaction(i[2],i[6],ct.bsctrack,ct.bscacc)
+        else:
+            k = ct.getlatestTransaction(i[2],0,ct.bsctrack,ct.bscacc)
         #print(k)
         cursor.execute("update user set bsc_l_tx='{0}',bsc_l_block='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
@@ -40,7 +45,7 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[7]:
-                    t = "<a href={0}>{1}</a>".format(bscscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    t = "<a href='{0}'>{1}</a>".format(bscscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
                     msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == i[2]:
                         link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],j['from'].upper())
