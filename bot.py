@@ -92,11 +92,13 @@ def msgHandler(update: Update, context: CallbackContext):
                 wallets = cursor.execute("select wallet from user where userid='{0}'".format(user))
                 wallets = wallets.fetchall()
                 wallets = [x[0] for x in wallets]
-                msg='Okay the following wallet were added for tracking\n'            
+                wt=0
+                msg=''
                 for i in address:
                     if i in wallets:
-                        continue
+                        update.effective_chat('This wallet is already in tracking, please send another wallet')
                     else:
+                        wt+=1
                         username = update.effective_chat.username
                         latest_tx = ct.getlatestTransaction(address,0,ctrack,ct.acc)
                         print(latest_tx)
@@ -119,8 +121,10 @@ def msgHandler(update: Update, context: CallbackContext):
                             
                 cursor.close()
                 sqliteConnection.close()
-                
-                update.effective_chat.send_message(msg,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
+                if wt != 0:
+                    msg='Okay the following wallet were added for tracking\n'+msg            
+                    update.effective_chat.send_message(msg,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
+                    
                 context.user_data.clear()
             else:
                 context.user_data.clear()
@@ -236,7 +240,7 @@ def msgHandler(update: Update, context: CallbackContext):
             msg=''
             for x in wallets:
                 if x[2]:
-                    link = "<a href='{0}'>{1}</a>"
+                    link = "<a href='{0}'>{1} (ETH)</a>"
                     msg+=link.format(etherscan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if x[3]:
                     link = "<a href='{0}'>{1} (BSC)</a>"
