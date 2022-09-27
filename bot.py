@@ -96,7 +96,7 @@ def msgHandler(update: Update, context: CallbackContext):
                 msg=''
                 for i in address:
                     if i in wallets:
-                        update.effective_chat('This wallet is already in tracking, please send another wallet')
+                        update.effective_chat.send_message('This wallet is already in tracking, please send another wallet')
                     else:
                         wt+=1
                         username = update.effective_chat.username
