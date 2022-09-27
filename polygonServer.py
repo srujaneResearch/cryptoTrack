@@ -37,9 +37,8 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[11]:
-                    #print("True")
-                    
-                    msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
+                    t = "<a href={0}>{1}</a>".format(polyscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == i[2]:
                         link = "<a href='{0}'>{1}</a>".format(polyscan+j['from'],j['from'].upper())
                         msg+=" <b>(Your Wallet):</b>\n"+link+"\n"

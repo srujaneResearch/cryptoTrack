@@ -40,9 +40,8 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[7]:
-                    #print("True")
-                    
-                    msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
+                    t = "<a href={0}>{1}</a>".format(bscscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == i[2]:
                         link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],j['from'].upper())
                         msg+=" <b>(Your Wallet):</b>\n"+link+"\n"

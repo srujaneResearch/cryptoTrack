@@ -37,8 +37,8 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[4]:
-                    
-                    msg+="Latest Transaction\n"+str(i[2]).upper()+"\nFrom"
+                    t = "<a href={0}>{1}</a>".format(etherscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == str(i[2]):
                         msg+=" <b>(Your Wallet):</b>\n"+ "<a href='{0}'>{1}</a>".format(ct.etherscan+j['from'],j['from'].upper())+"\n"
                     else:
