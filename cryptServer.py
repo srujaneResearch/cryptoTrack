@@ -24,7 +24,10 @@ data = cursor.execute("select * from user").fetchall()
 for i in data:
     #print(i)
     try:
-        k = ct.getlatestTransaction(i[2],0, ct.ctrack,ct.acc)
+        if i[3] != None:
+            k = ct.getlatestTransaction(i[2],i[3], ct.ctrack,ct.acc)
+        else:
+            k = ct.getlatestTransaction(i[2],0, ct.ctrack,ct.acc)
         #print(k)
         cursor.execute("update user set last_hash='{0}',last_block_mined='{1}' where wallet='{2}'".format(k[0]['hash'],k[0]['blockNumber'],i[2]))
         sqliteConnection.commit()
@@ -37,14 +40,14 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[4]:
-                    t = "<a href={0}>{1}</a>".format(etherscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    t = "<a href='{0}'>{1}</a>".format(etherscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
                     msg+="Latest Transaction\n"+t+"\nFrom"
-                    if j['from'] == str(i[2]):
+                    if j['from'] == i[2]:
                         msg+=" <b>(Your Wallet):</b>\n"+ "<a href='{0}'>{1}</a>".format(ct.etherscan+j['from'],j['from'].upper())+"\n"
                     else:
                         link = "<a href='{0}'>{1}</a>".format(etherscan+j['from'],j['from'].upper())
                         msg+=":\n"+link+"\n"
-                    if j['to'] == str(i[2]):
+                    if j['to'] == i[2]:
                         link = "<a href='{0}'>{1}</a>".format(etherscan+j['to'],j['to'].upper())
                         msg+="To<b>(Your Wallet)</b>:\n"+link+"\n"
                     else:
@@ -63,6 +66,7 @@ for i in data:
                                                                     "text":msg,
                                                                     "parse_mode":"HTML"
                                                                     })
+                    print(tele)
                     
                 else:
                     break
