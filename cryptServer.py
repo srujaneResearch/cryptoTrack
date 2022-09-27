@@ -17,7 +17,7 @@ import sqlite3 as sq
 import os
 dfile = os.path.join(os.path.expanduser('~'),'Desktop','cryptoTrack','cryptoTrack.db')
 
-dfile='cryptoTrack.db'
+#dfile='cryptoTrack.db'
 sqliteConnection = sq.connect(dfile)
 cursor = sqliteConnection.cursor()
 data = cursor.execute("select * from user").fetchall()
