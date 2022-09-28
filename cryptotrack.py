@@ -96,7 +96,7 @@ def getlatestTransaction(address,block,ctrack,acc):
               "address":address,
               "startblock":block,
               "page":"1",
-              "offset":20,
+              "offset":"20",
               "sort":"desc",
               "apikey":ctrack
               }

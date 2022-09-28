@@ -58,13 +58,22 @@ for i in data:
                         contract,value = ct.getTransactionLog(j['hash'])
                         abi = ct.getABI(contract,ct.ctrack,ct.acc)
                         symbol = ct.getSymbol(contract, abi, ct.ethend)    
-                        msg+="<i>Token transfer: {0} {1}</i>".format(value,symbol)
-                    else:    
-                        msg+="Ether transfer: {:.18f}".format(float(j['value'])/10**18)
+                        msg+="<b><em>Token transfer: {0} {1}</em></b>".format(value,symbol)
+                    else:
+                        try:
+                            contract,value = ct.getTransactionLog(j['hash'])
+                            abi = ct.getABI(contract,ct.ctrack,ct.acc)
+                            symbol = ct.getSymbol(contract, abi, ct.ethend)    
+                            msg+="<b><em>Token transfer: {0} {1}</em></b>".format(value,symbol)
+                        except:
+                            
+                            msg+="<b><em>Ether transfer: {:.18f}</em></b>".format(float(j['value'])/10**18)
                     
                     tele=requests.get(telegram_url+"/sendMessage",params={"chat_id":i[0],
                                                                     "text":msg,
-                                                                    "parse_mode":"HTML"
+                                                                    "parse_mode":"HTML",
+                                                                    "disable_web_page_preview":"True"
+                                                                    
                                                                     })
                     print(tele)
                     

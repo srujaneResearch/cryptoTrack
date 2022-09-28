@@ -69,7 +69,7 @@ def start(update: Update, context: CallbackContext):
         for x in wallets:
             msg+=str(x).upper()+"\n"
         
-        update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML)
+        update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
         cursor.close()
         sqliteConnection.close() 
         
@@ -260,7 +260,7 @@ def msgHandler(update: Update, context: CallbackContext):
                     msg+=link.format(x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                     
             
-            update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML)
+            update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
             cursor.close()
             sqliteConnection.close()
     elif 'Assign name to wallets' in update.message.text:
@@ -329,10 +329,10 @@ def msgHandler(update: Update, context: CallbackContext):
             if len(msg)>=4096:
                 
                 for i in range(1,math.ceil(len(msg)/4096)+1):
-                    update.effective_chat.send_message(text=msg[(4096*i)-4096:4096*i],parse_mode=ParseMode.HTML)
+                    update.effective_chat.send_message(text=msg[(4096*i)-4096:4096*i],parse_mode=ParseMode.HTML,disable_web_page_preview=True)
                 #update.effective_chat.send_message(text=msg[4096:],parse_mode=ParseMode.HTML)
             else:
-                update.effective_chat.send_message(text=msg,parse_mode=ParseMode.HTML)
+                update.effective_chat.send_message(text=msg,parse_mode=ParseMode.HTML,disable_web_page_preview=True)
             cursor.close()
             sqliteConnection.close()
             

@@ -41,7 +41,7 @@ for i in data:
         #data.iloc[i][-1] = k[0]['blockNumber']
         
         if i[8] != None:
-            #print("Working For",i[1])
+            print("Working For",i[1])
             
             for j in k:
                 msg=''
@@ -69,12 +69,20 @@ for i in data:
                         contract,value = ct.getTransactionLog(j['hash'])
                         abi = ct.getABI(contract,ct.avatrack,ct.avaacc)
                         symbol = ct.getSymbol(contract, abi, ct.avalancheend)    
-                        msg+="<i>Token transfer: {0} {1}</i>".format(value,symbol)
+                        msg+="<b><i>Token transfer: {0} {1}</i></b>".format(value,symbol)
                     else:    
-                        msg+="AVVA transfer: {:.18f}".format(float(j['value'])/10**18)
+                        try:
+                            contract,value = ct.getTransactionLog(j['hash'])
+                            abi = ct.getABI(contract,ct.avatrack,ct.avaacc)
+                            symbol = ct.getSymbol(contract, abi, ct.avalancheend)    
+                            msg+="<b><i>Token transfer: {0} {1}</i></b>".format(value,symbol)
+                        except:
+                            msg+="<b>AVVA transfer: {:.18f}</b>".format(float(j['value'])/10**18)
                     tele=requests.get(telegram_url+"/sendMessage",params={"chat_id":i[0],
                                                                     "text":msg,
-                                                                    "parse_mode":"HTML"
+                                                                    "parse_mode":"HTML",
+                                                                    "disable_web_page_preview":"True"
+                                                                    
                                                                     })
                     
                     #print(tele.json())
