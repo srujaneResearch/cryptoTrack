@@ -45,19 +45,19 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[7]:
-                    t = "<a href='{0}'>{1}</a>".format(bscscan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    t = "<a href='{0}'>{1}</a>".format(bscscan.split('address')[0]+"tx/"+j['hash'],'0x'+j['hash'].split('0x')[1].upper())
                     msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == i[2]:
-                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],j['from'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],'0x'+j['from'].split('0x')[1].upper())
                         msg+=" <b>(Your Wallet):</b>\n"+link+"\n"
                     else:
-                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],j['from'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['from'],'0x'+j['from'].split('0x')[1].upper())
                         msg+=":\n"+link+"\n"
                     if j['to'] == i[2]:
-                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['to'],j['to'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['to'],'0x'+j['to'].split('0x')[1].upper())
                         msg+="To<b>(Your Wallet)</b>:\n"+link+"\n"
                     else:
-                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['to'],j['to'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(bscscan+j['to'],'0x'+j['to'].split('0x')[1].upper())
                         msg+="To:\n"+link+"\n"
                         
                     if 'transfer' in j['functionName']:

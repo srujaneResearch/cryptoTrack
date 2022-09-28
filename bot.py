@@ -67,7 +67,7 @@ def start(update: Update, context: CallbackContext):
         wallets = [x[0] for x in cursor.execute("select wallet from user where userid='{0}'".format(user)).fetchall()]
         msg=''
         for x in wallets:
-            msg+=str(x).upper()+"\n"
+            msg+='0x'.str(x).split('0x')[1].upper()+"\n"
         
         update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
         cursor.close()
@@ -106,7 +106,7 @@ def msgHandler(update: Update, context: CallbackContext):
                             if len(latest_tx)==0:
                                 cursor.execute("insert into user (userid,username,wallet,wallet_name) values ('{0}','{1}','{2}','{3}')".format(user,username,i,' '))                    
                                 sqliteConnection.commit()
-                                msg+=i.upper()+"\n"
+                                msg+='0x'+i.split('0x')[1].upper()+"\n"
                             else:    
                                 k = latest_tx[0]
                                 print(k)
@@ -115,7 +115,7 @@ def msgHandler(update: Update, context: CallbackContext):
                     
                                 cursor.execute("insert into user (userid,username,wallet,last_block_mined,last_hash,wallet_name) values ('{0}','{1}','{2}','{3}','{4}','{5}')".format(user,username,i,k['blockNumber'],k['hash'],' '))                    
                                 sqliteConnection.commit()                    
-                                msg+=i.upper()+"\n"
+                                msg+='0x'+i.split('0x')[1].upper()+"\n"
                         except:
                             update.effective_chat.send_message("Wrong Address Format, Try Again\n{0}".format(i))
                             
@@ -181,7 +181,7 @@ def msgHandler(update: Update, context: CallbackContext):
                 cursor.execute("update user set wallet_name='{0}' where wallet='{1}'".format(name,wallet))
                 sqliteConnection.commit()
                 data = cursor.execute("select wallet,wallet_name from user where wallet='{0}'".format(wallet)).fetchall()
-                txt="Wallet Name Changed\n"+data[0][0].upper()+" "+data[0][1]
+                txt="Wallet Name Changed\n"+'0x'+data[0][0].split('0x')[1].upper()+" "+data[0][1]
                 update.effective_chat.send_message(txt)
                 context.user_data.clear()
                 cursor.close()
@@ -215,7 +215,7 @@ def msgHandler(update: Update, context: CallbackContext):
             data = cursor.execute("select wallet from user where userid='{0}'".format(user)).fetchall()
             msg=''
             for i in range(1,len(data)+1):
-                msg+="{0})\n{1}\n".format(i,data[i-1][0].upper())
+                msg+="{0})\n{1}\n".format(i,'0x'+data[i-1][0].split('0x')[1].upper())
             
             msg+="\n\n Send me the number of wallet or wallet address to delete"
             update.effective_chat.send_message(msg,parse_mode=ParseMode.HTML)
@@ -241,23 +241,23 @@ def msgHandler(update: Update, context: CallbackContext):
             for x in wallets:
                 if x[2]:
                     link = "<a href='{0}'>{1} (ETH)</a>"
-                    msg+=link.format(etherscan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format(etherscan+x[0],"0x"+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if x[3]:
                     link = "<a href='{0}'>{1} (BSC)</a>"
-                    msg+=link.format(bscscan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format(bscscan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                     
                 if x[4]:
                     link = "<a href='{0}'>{1} (AVAA)</a>"
-                    msg+=link.format(avascan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format(avascan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if x[5]:
                     link = "<a href='{0}'>{1} (MATIC)</a>"
-                    msg+=link.format(polyscan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format(polyscan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if x[6]:
                     link = "<a href='{0}'>{1} (FTM)</a>"
-                    msg+=link.format(ftmscan+x[0],x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format(ftmscan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if not x[2]:
                     link = "<a href=''>{0}</a>"
-                    msg+=link.format(x[0].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    msg+=link.format('0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                     
             
             update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
@@ -281,7 +281,7 @@ def msgHandler(update: Update, context: CallbackContext):
             data = cursor.execute("select wallet,wallet_name from user where userid='{0}'".format(user)).fetchall()
             msg=''
             for i in range(1,len(data)+1):
-                msg+="{0})\n{1} <b>{2}</b>\n".format(i,data[i-1][0].upper(),data[i-1][1])
+                msg+="{0})\n{1} <b>{2}</b>\n".format(i,'0x'+data[i-1][0].split('0x')[1].upper(),data[i-1][1])
             
             msg+="\n\n Send me the number of wallet and desired name (example 1 my_first_wallet)"
             update.effective_chat.send_message(msg,parse_mode=ParseMode.HTML)
@@ -308,7 +308,7 @@ def msgHandler(update: Update, context: CallbackContext):
             print(wallets)
             msg=''
             for wallet in wallets:
-                msg+=wallet[0].upper()+" "+"<b>"+wallet[1]+"</b>"+"\n"
+                msg+='0x'+wallet[0].split('0x')[1].upper()+" "+"<b>"+wallet[1]+"</b>"+"\n"
                 
                 for b in blockchain:
                     f=0
@@ -318,7 +318,7 @@ def msgHandler(update: Update, context: CallbackContext):
                         if len(assets) != 0:
                             f=1
                             msg+="<b>{0}</b>\n\n".format(b.upper())
-                            msg+=wallet[0].upper()+" <b>({0})</b>".format(b.upper())+"\n"
+                            msg+='0x'+wallet[0].split('0x')[1].upper()+" <b>({0})</b>".format(b.upper())+"\n"
                             for _ in assets:
                                 msg+=_['balance']+" "+_['tokenSymbol']+"\n"
                     except:

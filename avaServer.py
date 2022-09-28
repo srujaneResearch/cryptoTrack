@@ -49,20 +49,20 @@ for i in data:
                 #time.sleep(30)
                 
                 if j['hash'] != i[9]:
-                    t = "<a href='{0}'>{1}</a>".format(avascan.split('address')[0]+"tx/"+j['hash'],j['hash'].upper())
+                    t = "<a href='{0}'>{1}</a>".format(avascan.split('address')[0]+"tx/"+j['hash'],'0x'+j['hash'].split('0x')[1].upper())
                     msg+="Latest Transaction\n"+t+"\nFrom"
                     if j['from'] == str(i[2]):
-                        link = "<a href='{0}'>{1}</a>".format(avascan+j['from'],j['from'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(avascan+j['from'],'0x'+j['from'].split('0x')[1].upper())
                         msg+=" <b>(Your Wallet):</b>\n"+link+"\n"
                     else:
-                        link = "<a href='{0}'>{1}</a>".format(avascan+j['from'],j['from'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(avascan+j['from'],'0x'+j['from'].split('0x')[1].upper())
                         msg+=":\n"+link+"\n"
                     if j['to'] == str(i[2]):
-                        link = "<a href='{0}'>{1}</a>".format(avascan+j['to'],j['to'].upper())
+                        link = "<a href='{0}'>{1}</a>".format(avascan+j['to'],'0x'+j['to'].split('0x')[1].upper())
                         msg+="To<b>(Your Wallet)</b>:\n"+link+"\n"
                     else:
-                        link = "<a href='{0}'>{1}</a>".format(avascan+j['to'],j['to'].upper())
-                        msg+="To:\n"+j['to'].upper()+"\n"
+                        link = "<a href='{0}'>{1}</a>".format(avascan+j['to'],'0x'+j['to'].split('0x')[1].upper())
+                        msg+="To:\n"+'0x'+j['to'].split('0x')[1].upper()+"\n"
                         
                     if 'transfer' in j['functionName']:
                             
