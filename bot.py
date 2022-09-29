@@ -43,17 +43,20 @@ By tracking your transactions, be the first to know when:
 
 To start tracking your wallet’s transactions send me your ETH or BTC wallet addresses (you can send several addresses separated by comma in one message):
 """
-cryp = "5730421955:AAF_pJBJcfrWiDV4M0Pfa_w1k5WfunLecnU" # This is the API KEY for bot
+cryp = "5421348805:AAH1WT8c4baviLO-E5m7P1nmIqNFUYYRExI" # This is the API KEY for bot
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
+buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+           [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
+          ]
 
 def start(update: Update, context: CallbackContext):
     """ This function is for command /start"""
     #context.user_data.clear()
     sqliteConnection = sq.connect('cryptoTrack.db')
     cursor = sqliteConnection.cursor()
-    buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-               [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+    buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+               [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                ]
     user = str(update.effective_chat.id)
     u = cursor.execute("select userid from user where userid='{0}'".format(user)).fetchall()
@@ -67,9 +70,9 @@ def start(update: Update, context: CallbackContext):
         wallets = [x[0] for x in cursor.execute("select wallet from user where userid='{0}'".format(user)).fetchall()]
         msg=''
         for x in wallets:
-            msg+='0x'.str(x).split('0x')[1].upper()+"\n"
+            msg+='0x'+x.split('0x')[1].upper()+"\n"
         
-        update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
+        update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
         cursor.close()
         sqliteConnection.close() 
         
@@ -82,8 +85,8 @@ def msgHandler(update: Update, context: CallbackContext):
             
             if len(update.message.text)==42 or ',' in update.message.text:
             
-                buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                           [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+                buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                           [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                            ]
                 address,user = update.message.text.split(','),str(update.effective_chat.id)
                 sqliteConnection = sq.connect('cryptoTrack.db')
@@ -131,8 +134,8 @@ def msgHandler(update: Update, context: CallbackContext):
         elif context.user_data['point']=='deleteWallet':
             sqliteConnection = sq.connect('cryptoTrack.db')
             cursor = sqliteConnection.cursor()
-            buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                       [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+            buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                       [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                        ]
             user = str(update.effective_chat.id)
             msg = update.message.text
@@ -145,7 +148,7 @@ def msgHandler(update: Update, context: CallbackContext):
                 sqliteConnection.commit()
                 data = cursor.execute("select wallet,wallet_name from user where wallet='{0}'".format(wallet)).fetchall()
                 txt="Wallet Successfully Deleted!"
-                update.effective_chat.send_message(txt)
+                update.effective_chat.send_message(txt,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
                 context.user_data.clear()
                 cursor.close()
                 sqliteConnection.close()
@@ -155,21 +158,21 @@ def msgHandler(update: Update, context: CallbackContext):
                 sqliteConnection.commit()
                 data = cursor.execute("select wallet,wallet_name from user where wallet='{0}'".format(wallet)).fetchall()
                 txt="Wallet Successfully Deleted!"
-                update.effective_chat.send_message(txt)
+                update.effective_chat.send_message(txt,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
                 context.user_data.clear()
                 cursor.close()
                 sqliteConnection.close()               
                                 
             else:
-                update.effective_chat.send_message("Wrong Format Try Again!")
+                update.effective_chat.send_message("Wrong Format Try Again!",reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
                 cursor.close()
                 sqliteConnection.close()            
             
         elif context.user_data['point']=='walletName':
             sqliteConnection = sq.connect('cryptoTrack.db')
             cursor = sqliteConnection.cursor()
-            buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                       [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+            buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                       [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                        ]
             user = str(update.effective_chat.id)
             msg = update.message.text
@@ -182,7 +185,7 @@ def msgHandler(update: Update, context: CallbackContext):
                 sqliteConnection.commit()
                 data = cursor.execute("select wallet,wallet_name from user where wallet='{0}'".format(wallet)).fetchall()
                 txt="Wallet Name Changed\n"+'0x'+data[0][0].split('0x')[1].upper()+" "+data[0][1]
-                update.effective_chat.send_message(txt)
+                update.effective_chat.send_message(txt,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
                 context.user_data.clear()
                 cursor.close()
                 sqliteConnection.close()
@@ -194,14 +197,14 @@ def msgHandler(update: Update, context: CallbackContext):
             
             
             
-    if 'Add more wallets' in update.message.text:
+    if "Add New Wallet" in update.message.text:
         context.user_data['point']='getAddress'
         update.effective_chat.send_message("send your ETH/BSC/POLY/AVA/FANTOM wallet address")
-    elif 'Delete one wallet' in update.message.text:
+    elif "Delete Old Wallet" in update.message.text:
         sqliteConnection = sq.connect('cryptoTrack.db')
         cursor = sqliteConnection.cursor()
-        buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                   [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+        buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                   [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                    ]
         user = str(update.effective_chat.id)
         u = cursor.execute("select userid from user where userid='{0}'".format(user)).fetchall()
@@ -221,11 +224,11 @@ def msgHandler(update: Update, context: CallbackContext):
             update.effective_chat.send_message(msg,parse_mode=ParseMode.HTML)
             context.user_data['point']='deleteWallet'
         
-    elif 'View tracked wallets' in update.message.text:
+    elif "Check All Wallets" in update.message.text:
         sqliteConnection = sq.connect('cryptoTrack.db')
         cursor = sqliteConnection.cursor()
-        buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                   [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+        buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                   [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                    ]
         user = str(update.effective_chat.id)
         u = cursor.execute("select userid from user where userid='{0}'".format(user)).fetchall()
@@ -247,7 +250,7 @@ def msgHandler(update: Update, context: CallbackContext):
                     msg+=link.format(bscscan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                     
                 if x[4]:
-                    link = "<a href='{0}'>{1} (AVAA)</a>"
+                    link = "<a href='{0}'>{1} (AVA)</a>"
                     msg+=link.format(avascan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
                 if x[5]:
                     link = "<a href='{0}'>{1} (MATIC)</a>"
@@ -263,11 +266,11 @@ def msgHandler(update: Update, context: CallbackContext):
             update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
             cursor.close()
             sqliteConnection.close()
-    elif 'Assign name to wallets' in update.message.text:
+    elif "Name A Wallet" in update.message.text:
         sqliteConnection = sq.connect('cryptoTrack.db')
         cursor = sqliteConnection.cursor()
-        buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                   [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+        buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                   [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                    ]
         user = str(update.effective_chat.id)
         u = cursor.execute("select userid from user where userid='{0}'".format(user)).fetchall()
@@ -287,11 +290,11 @@ def msgHandler(update: Update, context: CallbackContext):
             update.effective_chat.send_message(msg,parse_mode=ParseMode.HTML)
             context.user_data['point']='walletName'
 
-    elif 'Balances' in update.message.text:        
+    elif "Check All Balances" in update.message.text:        
         sqliteConnection = sq.connect('cryptoTrack.db')
         cursor = sqliteConnection.cursor()
-        buttons = [[KeyboardButton("Add more wallets"),KeyboardButton("Delete one wallet"),KeyboardButton("View tracked wallets")],
-                   [KeyboardButton("Assign name to wallets"),KeyboardButton("Balances")]
+        buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
+                   [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                    ]
         user = str(update.effective_chat.id)
         u = cursor.execute("select userid from user where userid='{0}'".format(user)).fetchall()
