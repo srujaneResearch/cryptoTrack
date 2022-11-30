@@ -9,7 +9,7 @@ etherscan = "https://etherscan.io/address/"
 
 import cryptotrack as ct
 import requests
-cryp = "5421348805:AAH1WT8c4baviLO-E5m7P1nmIqNFUYYRExI" # This is the API KEY for bot
+cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 
