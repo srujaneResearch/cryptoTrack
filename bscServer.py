@@ -18,10 +18,12 @@ import sqlite3 as sq
 import os
 dfile = os.path.join(os.path.expanduser('~'),'Desktop','cryptoTrack','cryptoTrack.db')
 
-
-sqliteConnection = sq.connect(dfile)
+import mysql.connector
+  
+sqliteConnection = mysql.connector.connect(host ="sql9.freemysqlhosting.net",user ="sql9581771",passwd ="F31X7VSfUT",   database = "sql9581771")
 cursor = sqliteConnection.cursor()
-data = cursor.execute("select * from user").fetchall()
+data = cursor.execute("select * from user")
+data = cursor.fetchall()
 for i in data:
     #print(i)
     try:

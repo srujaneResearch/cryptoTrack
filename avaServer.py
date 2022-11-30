@@ -15,7 +15,7 @@ Created on Sun Sep 25 12:29:45 2022
 """
 import cryptotrack as ct
 import requests
-cryp = "5421348805:AAH1WT8c4baviLO-E5m7P1nmIqNFUYYRExI" # This is the API KEY for bot
+cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 import sqlite3 as sq
@@ -23,9 +23,14 @@ import os
 dfile = os.path.join(os.path.expanduser('~'),'Desktop','cryptoTrack','cryptoTrack.db')
 avascan='https://snowtrace.io/address/'
 
-sqliteConnection = sq.connect(dfile)
+
+import mysql.connector
+  
+sqliteConnection = mysql.connector.connect(host ="sql9.freemysqlhosting.net",user ="sql9581771",passwd ="F31X7VSfUT",   database = "sql9581771")
 cursor = sqliteConnection.cursor()
-data = cursor.execute("select * from user").fetchall()
+data = cursor.execute("select * from user")
+data = cursor.fetchall()
+
 for i in data:
     #print(i)
     try:
