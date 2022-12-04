@@ -23,6 +23,8 @@ bscscan='https://bscscan.com/address/'
 avascan='https://snowtrace.io/address/'
 polyscan='https://polygonscan.com/address/'
 ftmscan='https://ftmscan.com/address/'
+btcscan = "https://www.blockchain.com/btc/address/"
+
 blockchain = ['eth','bsc','avalanche','polygon','fantom']
 
 
@@ -45,8 +47,8 @@ By tracking your transactions, be the first to know when:
 
 To start tracking your wallet’s transactions send me your ETH or BTC wallet addresses (you can send several addresses separated by comma in one message):
 """
-cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
-#cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
+#cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
+cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
@@ -125,7 +127,10 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             data = executeQuery("select wallet from user where userid='{0}'".format(user))
             msg=''
             for i in range(1,len(data)+1):
-                msg+="{0})\n{1}\n".format(i,'0x'+data[i-1][0].split('0x')[1].upper())
+                if len(data[i-1][0])==34:
+                    msg+="{0})\n{1}\n".format(i,data[i-1][0])
+                else:    
+                    msg+="{0})\n{1}\n".format(i,'0x'+data[i-1][0].split('0x')[1].upper())
             
             msg+="\n\n Send me the number of wallet or wallet address to delete"
             await update.effective_chat.send_message(msg,parse_mode=ParseMode.HTML)
@@ -144,7 +149,7 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context.user_data['point'] = 'getAddress'
             return
         else:
-            wallets = executeQuery("select wallet,wallet_name,last_block_mined,bsc_l_block,ava_l_block,poly_l_block,ftm_l_block from user where userid='{0}'".format(user))
+            wallets = executeQuery("select wallet,wallet_name,last_block_mined,bsc_l_block,ava_l_block,poly_l_block,ftm_l_block,btc_l_block from user where userid='{0}'".format(user))
             msg=''
             for x in wallets:
                 if x[2]:
@@ -163,15 +168,28 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if x[6]:
                     link = "<a href='{0}'>{1} (FTM)</a>"
                     msg+=link.format(ftmscan+x[0],'0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                
+                if x[-1]:
+                    btc=1
+                    link = "<a href='{0}'>{1} (BTC)</a>"
+                    msg+=link.format(btcscan+x[0],x[0])+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                
                 if not x[2]:
-                    link = "<a href=''>{0}</a>"
-                    msg+=link.format('0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
-                    
+                
+                    try:
+                        link = "<a href=''>{0}</a>"
+                        msg+=link.format('0x'+x[0].split('0x')[1].upper())+" "+"<b>"+x[1]+"</b>"+"\n\n"
+                    except:
+                        if btc==1:
+                            continue
+                        else:
+                            link = "<a href=''>{0}</a>"
+                            msg+=link.format(x[0],x[0])+" "+"<b>"+x[1]+"</b>"+"\n\n"
+
             
             await update.effective_chat.send_message("<b>Tracked Wallets:</b>\n{0}".format(msg),parse_mode=ParseMode.HTML,disable_web_page_preview=True)
             return
     elif "Name A Wallet" in update.message.text:
-        cursor = sqliteConnection.cursor()
         buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
                    [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                    ]
@@ -210,24 +228,32 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             print(wallets)
             msg=''
             for wallet in wallets:
-                msg+='0x'+wallet[0].split('0x')[1].upper()+" "+"<b>"+wallet[1]+"</b>"+"\n"
-                
-                for b in blockchain:
-                    f=0
-                
-                    try:
-                        assets = ct.getBalances(wallet[0],b)
-                        if len(assets) != 0:
-                            f=1
-                            msg+="<b>{0}</b>\n\n".format(b.upper())
-                            msg+='0x'+wallet[0].split('0x')[1].upper()+" <b>({0})</b>".format(b.upper())+"\n"
-                            for _ in assets:
-                                msg+=_['balance']+" "+_['tokenSymbol']+"\n"
-                    except:
-                        print("Error in balance")
-                        continue
-                    if f==1:
-                        msg+="<b>---------------------------</b>\n\n"
+
+                if len(wallet[0]) == 34:
+                    msg+="<b>BITCOIN</b>\n\n"
+                    msg+=wallet[0]+" "+"<b>"+wallet[1]+"</b>"+"\n"
+                    assets = "{0:.8f}".format(ct.getBalanceBTC(wallet[0]))
+                    msg+=assets+" BTC"+"\n\n"
+                    msg+="<b>---------------------------</b>\n\n"
+                else:
+                    msg+='0x'+wallet[0].split('0x')[1].upper()+" "+"<b>"+wallet[1]+"</b>"+"\n"
+                    
+                    for b in blockchain:
+                        f=0
+                    
+                        try:
+                            assets = ct.getBalances(wallet[0],b)
+                            if len(assets) != 0:
+                                f=1
+                                msg+="<b>{0}</b>\n\n".format(b.upper())
+                                msg+='0x'+wallet[0].split('0x')[1].upper()+" <b>({0})</b>".format(b.upper())+"\n"
+                                for _ in assets:
+                                    msg+=_['balance']+" "+_['tokenSymbol']+"\n"
+                        except:
+                            print("Error in balance")
+                            continue
+                        if f==1:
+                            msg+="<b>---------------------------</b>\n\n"
             if len(msg)>=4096:
                 
                 for i in range(1,math.ceil(len(msg)/4096)+1):
@@ -257,13 +283,13 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         elif context.user_data['point'] == 'getAddress':
             
-            if len(update.message.text)==42 or ',' in update.message.text:
+            if len(update.message.text)==42 or ',' in update.message.text or len(update.message.text)==34:
             
                 buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
                            [KeyboardButton("Name A Wallet"),KeyboardButton("Check All Balances")]
                            ]
                 address,user = update.message.text.split(','),str(update.effective_chat.id)
-                
+                print(address)
                 wallets = executeQuery("select wallet from user where userid='{0}'".format(user))
                 wallets = [x[0] for x in wallets]
                 wt=0
@@ -275,27 +301,55 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     else:
                         wt+=1
                         username = update.effective_chat.username
-                        latest_tx = ct.getlatestTransaction(address,0,ctrack,ct.acc)
-                        print(latest_tx)
-                        try:
-                            if len(latest_tx)==0:
-                                executeQuery("insert into user (userid,username,wallet,wallet_name) values ('{0}','{1}','{2}','{3}')".format(user,username,i,' '),"commit")                    
+                        print(i)
+
+
+                        if len(i)==34:
+                            try:
+                                latest_tx = ct.getlatestTransactionBTC(i)
+                                if len(latest_tx)==0:
+                                    executeQuery("insert into user (userid,username,wallet,wallet_name) values ('{0}','{1}','{2}','{3}')".format(user,username,i,' '),"commit")                    
+                                    
+                                    msg+=i+"\n"
+                                    cm.append(i)
+                                else:
+                                    print(latest_tx)
+                                    print("exec")
+                                    hsh = latest_tx[0]['hash']
+                                    blk = latest_tx[0]['block_index']
+                                    print(hsh,blk)
+                                    executeQuery("insert into user (userid,username,wallet,btc_l_block,btc_l_tx,wallet_name) values ('{0}','{1}','{2}','{3}','{4}','{5}')".format(user,username,i,blk,hsh,' '),"commit")                    
+                                    print("commit")
+                                    cm.append(i)
+                            except:
+                                print("fail to get details") 
+                                continue
+                                                           
+
+                        else:
+
+
+                            latest_tx = ct.getlatestTransaction(address,0,ctrack,ct.acc)
+                            print(latest_tx)
+                            try:
+                                if len(latest_tx)==0:
+                                    executeQuery("insert into user (userid,username,wallet,wallet_name) values ('{0}','{1}','{2}','{3}')".format(user,username,i,' '),"commit")                    
+                                    
+                                    msg+='0x'+i.split('0x')[1].upper()+"\n"
+                                    cm.append(i)
+                                else:    
+                                    k = latest_tx[0]
+                                    print(k)
+                                    print(type(k))
+                        
+                        
+                                    executeQuery("insert into user (userid,username,wallet,last_block_mined,last_hash,wallet_name) values ('{0}','{1}','{2}','{3}','{4}','{5}')".format(user,username,i,k['blockNumber'],k['hash'],' '),"commit")                    
+                                                        
+                                    msg+='0x'+i.split('0x')[1].upper()+"\n"
+                                    cm.append(i)
+                            except:
+                                await update.effective_chat.send_message("Wrong Address Format, Try Again\n{0}".format(i))
                                 
-                                msg+='0x'+i.split('0x')[1].upper()+"\n"
-                                cm.append(i)
-                            else:    
-                                k = latest_tx[0]
-                                print(k)
-                                print(type(k))
-                    
-                    
-                                executeQuery("insert into user (userid,username,wallet,last_block_mined,last_hash,wallet_name) values ('{0}','{1}','{2}','{3}','{4}','{5}')".format(user,username,i,k['blockNumber'],k['hash'],' '),"commit")                    
-                                                    
-                                msg+='0x'+i.split('0x')[1].upper()+"\n"
-                                cm.append(i)
-                        except:
-                            await update.effective_chat.send_message("Wrong Address Format, Try Again\n{0}".format(i))
-                            
                 if wt != 0:
                     msg='Okay the following wallet were added for tracking\n'+msg            
                     await update.effective_chat.send_message(msg,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
@@ -332,6 +386,14 @@ async def msgHandler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.effective_chat.send_message(txt,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
                 context.user_data.clear()     
                 return
+            elif len(msg)==34:
+                wallet = msg
+                executeQuery("delete from user where wallet='{0}'".format(wallet),"commit")
+                data = executeQuery("select wallet,wallet_name from user where wallet='{0}'".format(wallet))
+                txt="Wallet Successfully Deleted!"
+                await update.effective_chat.send_message(txt,reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
+                context.user_data.clear()     
+                return                
                                 
             else:
                 await update.effective_chat.send_message("Wrong Format Try Again!",reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))

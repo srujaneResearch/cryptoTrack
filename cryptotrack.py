@@ -28,6 +28,10 @@ ethend = "https://rpc.ankr.com/eth/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a
 avalancheend = "https://rpc.ankr.com/avalanche/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2"
 bscendpoint = "https://rpc.ankr.com/bsc/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2"
 fantomendpoint="https://rpc.ankr.com/fantom/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2"
+trxendpoint = "https://rpc.ankr.com/premium-http/tron/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2"
+
+trxTrnsactionInfo = "https://rpc.ankr.com/premium-http/tron/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2/wallet/gettransactionbyid"
+
 
 a="https://rpc.ankr.com/multichain/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2"
 
@@ -49,7 +53,36 @@ def getABI(contract,ctrack,capi):
     k = requests.get(capi,params=txlist)
     r = k.json()['result']
     return r
+
+
+def getMultBTC(address):
+    api = "https://blockchain.info/multiaddr?active={0}".format(address)
+    l = requests.get(api)
+
+def getlatestTransactionBTC(address):
+    api = "https://blockchain.info/rawaddr/{0}".format(address)
+
+    l = requests.get(api)
+
+    return l.json()['txs']
+
+
+
+def getBalanceBTC(address):
+    api = "https://blockchain.info/balance?active={0}".format(address)
+    l = requests.get(api)
+    return l.json()[address]['final_balance']/100000000
+def getTransactionLogTRX(txhash):
+    para = {
+        "value":txhash
+    }
     
+    trxTrnsactionInfo = "https://rpc.ankr.com/premium-http/tron/110f3788f48704c99c2f08ac88d56de0d2a1b0e3c769a85b9d8ce00d2d08f6d2/wallet/gettransactionbyid"
+
+    
+    k = requests.post(trxTrnsactionInfo,data=json.dumps(para))
+    contract = k.json()['raw_data']['contract'][0]['parameter']['value']['contract_address']
+    value = k.json()['raw_data']['contract'][0]['parameter']['value']['data']
 
 
 def getTransactionLog(txhash):
@@ -105,6 +138,14 @@ def getlatestTransaction(address,block,ctrack,acc):
     k = requests.get(acc,params=txlist)
     r = k.json()['result']
     return r
+
+def getlatestTransactionTRX(address):
+    trxscan = "https://apilist.tronscan.org/api/transaction"
+    params = {"address":address}
+    k = requests.get(trxscan,params=params)
+    r = k.json()['data']
+    return r
+
 
 def test(address,block,ctrack):
     txlist = {"action":"txlist",
