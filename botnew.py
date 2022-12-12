@@ -47,8 +47,8 @@ By tracking your transactions, be the first to know when:
 
 To start tracking your wallet’s transactions send me your ETH or BTC wallet addresses (you can send several addresses separated by comma in one message):
 """
-#cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
-cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
+cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
+#cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
