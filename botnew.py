@@ -47,8 +47,8 @@ By tracking your transactions, be the first to know when:
 
 To start tracking your wallet’s transactions send me your ETH or BTC wallet addresses (you can send several addresses separated by comma in one message):
 """
-cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
-#cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
+#cryp = "5447226008:AAFxsOFQvj7sbgI0cDiDzGuju00aIjcgUCE" # This is the API KEY for bot
+cryp = "5540797060:AAEuYIQzk4LaWXkG8BJWNdGRt_-qlAvcZss"
 ctrack = "TKXCYFK7SYWXWSN1CIWGSB16DHI33181M3" # This is etherscan api key
 telegram_url = 'https://api.telegram.org/bot'+cryp
 buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet"),KeyboardButton("Check All Wallets")],
@@ -59,7 +59,7 @@ buttons = [[KeyboardButton("Add New Wallet"),KeyboardButton("Delete Old Wallet")
 def executeQuery(query,comt=None):
     import mysql.connector
   
-    conn = mysql.connector.connect(host ="sql9.freemysqlhosting.net",user ="sql9581771",passwd ="F31X7VSfUT",   database = "sql9581771")
+    conn = mysql.connector.connect(host ="172.107.32.113",port="10003",user ="admin",passwd ="agz8BRE0",database = "blockalert")
  
 # preparing a cursor object
     cur = conn.cursor()
@@ -88,7 +88,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(u) == 0: 
         await update.effective_chat.send_message(text=startmsg.format(update.effective_chat.username),reply_markup=ReplyKeyboardMarkup(buttons,resize_keyboard=True))
         await update.effective_chat.send_message(text="Please send you ethereum public address")
-        executeQuery("insert into")
+        #executeQuery("insert into users")
         context.user_data['point'] = 'getAddress'
     else:
         wallets = [x[0] for x in executeQuery("select wallet from user where userid='{0}'".format(user))]

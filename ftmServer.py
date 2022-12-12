@@ -33,8 +33,8 @@ ftmscan='https://ftmscan.com/address/'
 
 
 import mysql.connector
+sqliteConnection = mysql.connector.connect(host ="172.107.32.113",port="10003",user ="admin",passwd ="agz8BRE0",database = "blockalert")  
   
-sqliteConnection = mysql.connector.connect(host ="sql9.freemysqlhosting.net",user ="sql9581771",passwd ="F31X7VSfUT",   database = "sql9581771")
 cursor = sqliteConnection.cursor()
 data = cursor.execute("select * from user")
 data = cursor.fetchall()
